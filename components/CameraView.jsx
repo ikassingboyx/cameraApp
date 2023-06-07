@@ -64,7 +64,7 @@ export default function CameraView({navigation}) {
       const flashlightModes =  Object.keys(Camera.Constants.FlashMode)
       setCameraSettings({
         ratios: [...availableRatios],
-        whiteBalances : whiteBalances,
+        whiteBalances : [...whiteBalances],
         flashMode : flashlightModes,
       })
     }
@@ -93,7 +93,7 @@ export default function CameraView({navigation}) {
 
 
     const changeWhiteBalance = (value) =>{  
-      setCurrentWhiteBalance(Camera.Constants.FlashMode[value])      
+      setCurrentWhiteBalance(Camera.Constants.WhiteBalance[value])      
     }
     const changeFlashLightMode = (value) =>{
       setCurrentFlashLightMode(Camera.Constants.FlashMode[value])      
@@ -142,6 +142,7 @@ export default function CameraView({navigation}) {
               <ScrollView>
                 <RadioButtonGroup valueChange={changeFlashLightMode} buttons={cameraSettings.flashMode} header={"Flash"} />
                 <RadioButtonGroup valueChange={changeRatio} buttons={cameraSettings.ratios.map((ratio)=>ratio.ratio)} header={"Ratios"} />
+                <RadioButtonGroup valueChange={changeWhiteBalance} buttons={cameraSettings.whiteBalances} header={"WhiteBalance"}></RadioButtonGroup>
                 <RadioButtonGroup valueChange={changeResulution} buttons={currentRatio.sizes} header={"Resolutions"}/>
               </ScrollView>
                     

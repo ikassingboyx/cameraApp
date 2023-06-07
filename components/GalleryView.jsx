@@ -17,13 +17,12 @@ export default function GalleryView({ navigation }) {
     {
         setVisibility(false)
         let data = await MediaLibrary.getAssetsAsync({
-            first: 100,           // ilość pobranych assetów
-            mediaType: 'photo'    // typ pobieranych danych, photo jest domyślne
+            first: 100,          
+            mediaType: 'photo'    
         })
         data.assets.map((el,i)=>{
             el.selected = false;
         })
-        // data.assets = data.assets.sort((a,b)=> b.modificationTime - a.modificationTime)
         setPhotos(data.assets)
         setVisibility(true)
     }
@@ -44,6 +43,24 @@ export default function GalleryView({ navigation }) {
         await MediaLibrary.deleteAssetsAsync(photos.filter(p => p.selected))
         await loadData()
     }
+    const uploadSelected = () =>{
+        const selectedPhotos = photos.filter(p => p.selected)
+        const data = new FormData();
+
+        selectedPhotos.forEach(element => {
+            data.append("element", {
+                uri: element.uri,
+                type: 'image/jpeg',
+                name: element.filename
+                });
+                fetch("http://192.168.119.105:3000/upload", {
+                method: 'POST',
+                body: data
+            })
+        });
+
+       
+    }
     const showBigPhoto = (item) =>{
         navigation.navigate("image",{data: item})
     }
@@ -57,10 +74,11 @@ export default function GalleryView({ navigation }) {
                     :
                     <SafeAreaView style={BackgroudColors.LightSlate}>
                         <StatusBar />
-                        <View style={{flexDirection:"row", gap:20, justifyContent:"center"}}>
+                        <View style={{flexDirection:"row", justifyContent:"center"}}>
                         <Clickable text={"Columns"} handlePress={changeNumberOfColumns} styles={[Components.Button, FontColors.DarkSlateBlue]} />
                         <Clickable text={"Camera"} handlePress={() => navigation.navigate("camera")}  styles={[Components.Button, FontColors.DarkSlateBlue]} />
                         <Clickable text={"Delete"} handlePress={deleteSelectedImages}  styles={[Components.Button, FontColors.DarkSlateBlue]} />
+                        <Clickable text={"Upload"} handlePress={uploadSelected} styles={[Components.Button, FontColors.DarkSlateBlue]}></Clickable>
                         </View>
                         <FlatList
                             data={photos}

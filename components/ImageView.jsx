@@ -13,7 +13,6 @@ export default function ImageView({navigation, route}){
         Sharing.isAvailableAsync().then(yes=>{  
             if(yes)
             {
-                // ogólnie to działa ale na moim telefonie nie działa (approved)
                 Sharing.shareAsync(data.uri)
             }
             else{
@@ -24,6 +23,19 @@ export default function ImageView({navigation, route}){
     const handleDelteClick = async () =>{
         await MediaLibrary.deleteAssetsAsync(data)
         navigation.navigate("gallery")
+    }
+    const handleUploadClick = () =>{
+        const formidableData = new FormData();
+        formidableData.append("element", {
+                uri: data.uri,
+                type: 'image/jpeg',
+                name: data.filename
+                });
+                fetch("http://192.168.119.105:3000/upload", {
+                method: 'POST',
+                body: formidableData
+            })
+
     }
     
     return (
@@ -39,6 +51,7 @@ export default function ImageView({navigation, route}){
             <View style={{flex:1,flexDirection:"row", alignItems:"center",justifyContent:"center",gap:20}}>
                 <Clickable text={"Share"} handlePress={handleShareClick} styles={[Components.Button]} />
                 <Clickable text={"Delete"} handlePress={handleDelteClick} styles={[Components.Button]}/>
+                <Clickable text={"Upload"} handlePress={handleUploadClick} styles={[Components.Button]}/>
             </View>
         </SafeAreaView>
     )
